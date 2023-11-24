@@ -19,6 +19,6 @@
 	rts	
 	
 *=$1800 "Data"
-	num1: .dword 4375 // This is 12.345, stored as LE (Little-Endian)
-	num2: .dword 0 // This is 23.456, stored as LE
+	num1: .dword 12345 // This is 12.345, stored as LE (Little-Endian)
+	num2: .dword 23456 // This is 23.456, stored as LE
 	res: .word 0, 0     // This should become 35.801, stored as LE
