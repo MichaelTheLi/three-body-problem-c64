@@ -7,6 +7,15 @@ Developed using these awesome tools:
 * [VICE emulator](https://vice-emu.sourceforge.io/)
 * [Retro Debugger](https://github.com/slajerek/RetroDebugger)
 * [KickAssembler](http://www.theweb.dk/KickAssembler/Main.html#frontpage)
+## Content 
+### Learn
+These I used to better understand the limitations and mechanisms
+* [FixedPointNumbers tests](learn/fixedPointNumber01/readme.md)
+* [Single letter print](learn/print01/readme.md)
+* [Single letter on-row moves](learn/print02/readme.md)
+* [Single letter on-whole-screen moves](learn/print03/readme.md)
+### Final product
+TBD
 
 ## Running
 Binaries can be found in releases on built from sources and can be run using C64 emulator like VICE or any online C64 emulators, load an .prg binary using the emulator's manuals.
