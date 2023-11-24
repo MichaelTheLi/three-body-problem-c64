@@ -20,6 +20,6 @@ Wiki have some answers about max and min values, along with precision
 https://en.wikipedia.org/wiki/Fixed-point_arithmetic#Choice_of_scaling_factors
 https://en.wikibooks.org/wiki/Floating_Point/Fixed-Point_Numbers#Fixed-Point
 
-There is base10 and base2 versions, and this here interpreted as base10, I suppose.
+There is base10 and base2 versions, and this here interpreted as base10, I suppose, and differs only by the reader/writer interpretation
 
 So, next is https://en.wikibooks.org/wiki/Floating_Point/Fixed-Point_Numbers#Sine_table
