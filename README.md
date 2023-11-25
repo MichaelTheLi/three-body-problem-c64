@@ -10,10 +10,10 @@ Developed using these awesome tools:
 ## Content 
 ### Learn
 These I used to better understand the limitations and mechanisms
-* [FixedPointNumbers tests](learn/fixedPointNumber01/readme.md)
-* [Single letter print](learn/print01/readme.md)
-* [Single letter on-row moves](learn/print02/readme.md)
-* [Single letter on-whole-screen moves](learn/print03/readme.md)
+* [Single letter print](learn/01print01/01readme.md)
+* [Single letter on-row moves](learn/02print02/readme.md)
+* [Single letter on-whole-screen moves](learn/03print03/readme.md)
+* [FixedPointNumbers tests](learn/04fixedPointNumber01/readme.md)
 ### Final product
 TBD
 
