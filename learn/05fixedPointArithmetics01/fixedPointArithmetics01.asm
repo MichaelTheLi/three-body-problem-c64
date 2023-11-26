@@ -79,10 +79,10 @@ scaleBack:
 .macro divFixedPoint(dividend, divisor, remainder) {
 		ldx #6
 scaleDivisorToLowerScale:
-		asl dividend+1
-		rol dividend
-		dex
-		bne	scaleDivisorToLowerScale
+    asl dividend
+    rol dividend+1
+    dex
+    bne	scaleDivisorToLowerScale
 
     lda #0	        // preset remainder to 0
 	sta remainder
@@ -110,10 +110,10 @@ skip:
 	dex
 	bne divloop
 	
-		ldx #2
+    ldx #2
 scaleResult:
-		asl dividend+1
-		rol dividend
-		dex
-		bne	scaleResult
+    asl dividend
+    rol dividend+1
+    dex
+    bne	scaleResult
 }
