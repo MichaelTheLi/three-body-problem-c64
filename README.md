@@ -15,6 +15,7 @@ These I used to better understand the limitations and mechanisms
 * [Single letter on-whole-screen moves](learn/03print03/readme.md)
 * [Fixed-point numbers tests](learn/04fixedPointNumber01/readme.md)
 * [Fixed-point numbers arithmetics tests](learn/05fixedPointArithmetics01/readme.md)
+* [Sine table generation v0.1](learn/06sineTable01/readme.md)
 ### Final product
 TBD
 

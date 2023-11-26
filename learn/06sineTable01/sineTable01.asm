@@ -17,7 +17,7 @@
 	tmp2: .dword 0
 	tmp3: .dword 0
 
-.print("tmp: $"  + toHexString(tmp))
+.print("tmp:  $" + toHexString(tmp))
 .print("tmp2: $" + toHexString(tmp2))
 .print("tmp3: $" + toHexString(tmp3))
 
