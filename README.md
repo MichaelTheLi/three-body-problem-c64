@@ -18,10 +18,20 @@ These I used to better understand the limitations and mechanisms
 * [Sine table generation v0.1](learn/06sineTable01/readme.md)
 ### Final product
 TBD
-
 ## Running
 Binaries can be found in releases on built from sources and can be run using C64 emulator like VICE or any online C64 emulators, load an .prg binary using the emulator's manuals.
 Most of the programs are executed by using `SYS 4096` C64 command 
+
+#### Requirements 
+* [VICE emulator](https://vice-emu.sourceforge.io/)
+* [Retro Debugger](https://github.com/slajerek/RetroDebugger)
+* [KickAssembler](http://www.theweb.dk/KickAssembler/Main.html#frontpage)
+
+```
+make run
+# or 
+make debug
+```
 
 ### Running with VICE
 `[VICE_PATH]/bin/x64sc learn/print01/print01.prg`

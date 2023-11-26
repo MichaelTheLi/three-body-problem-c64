@@ -1,0 +1,12 @@
+build:
+	java -jar /Applications/KickAssembler/KickAss.jar $(filename).asm
+
+debugger: build
+	open /Applications/RetroDebugger/RetroDebugger.app $(filename).prg
+
+run: build
+	/Applications/vice-x86-64-gtk3-3.7.1/bin/x64sc $(filename).prg
+
+clean:
+	rm -f *.prg
+	rm -f *.sym
