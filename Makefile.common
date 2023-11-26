@@ -1,7 +1,7 @@
 build:
 	java -jar /Applications/KickAssembler/KickAss.jar $(filename).asm
 
-debugger: build
+debug: build
 	open /Applications/RetroDebugger/RetroDebugger.app $(filename).prg
 
 run: build

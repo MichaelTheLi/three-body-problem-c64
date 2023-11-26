@@ -1,17 +1,53 @@
 *=$1000 "Main"
-	sineByParabola(sinValues, sinTable)      		// 0.0, or 0 in fp
-	sineByParabola(sinValues + 2, sinTable + 2) 	// 0.707, or 181 in fp
-	sineByParabola(sinValues + 4, sinTable + 4)		// 0.866, or 221 in fp
-	sineByParabola(sinValues + 6, sinTable + 6) 	// 1.0, or 256 in fp
+continue:
+    ldx counter
+
+    lda sinValues,x
+    sta tmpDegree
+
+    ldx #8
+scaleDegree:
+    asl tmpDegree
+    rol tmpDegree+1
+    dex
+    bne	scaleDegree
+
+	sineByParabola(tmpDegree, tmpRes)
+
+    ldx counter
+
+    // TODO Should have separate hi-lo tables? Or ther eis a way to use indexing in this by-2 case?
+    lda tmpRes
+    sta sinTable,x
+    lda tmpRes+1
+    sta sinTable+1,x
+
+    dec counter
+    beq exit
+    jmp continue
+exit:
 	rts	
 
+.print("tmpRes:  $" + toHexString(tmpRes))
+.print("exit:  $" + toHexString(exit))
+.print("sinValues start:  $" + toHexString(sinValues))
+.print("sinValues end:  $" + toHexString(sinTable-1))
+.print("sinTable start:  $" + toHexString(sinTable))
+.print("sinTable end:  $" + toHexString(reminder-1))
+
 *=$1800 "Data"
-	sinValues: .word 1280, 11520, 15360, 22000  // 0, 45, 60, 90 in degrees
-	sinTable: .word 0, 0, 0, 0
+    tmpDegree: .word 0
+    tmpRes: .word 0
+    align: .byte 0
+    sinValues: .fill 256, i
+    sinTable: .fillword 256, 0
+	//sinValues: .fillword 256, i
+	//sinTable: .fillword 256, 0
 	reminder: .word 0
 	degree90: .word 23040 // 23040 is 90 in fixedPoint notation
 	degree1to90: .word 3 // 23040 is 90 in fixedPoint notation
 	one: .word 256
+	counter: .byte 90
 	
 	tmp: .dword 0
 	tmp2: .dword 0
