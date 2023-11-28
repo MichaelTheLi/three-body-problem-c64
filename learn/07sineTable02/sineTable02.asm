@@ -1,6 +1,8 @@
 *=$1000 "Main"
 continue:
-    ldx counter
+    lda counter
+    lsr
+    tax
 
     lda sinValues,x
     sta tmpDegree
@@ -16,16 +18,21 @@ scaleDegree:
 
     ldx counter
 
-    // TODO Should have separate hi-lo tables? Or ther eis a way to use indexing in this by-2 case?
+    // TODO Should try separate hi-lo tables
     lda tmpRes
-    sta sinTable,x
+    sta sinTable, x
     lda tmpRes+1
-    sta sinTable+1,x
+    sta sinTable+1, x
 
+    dec counter
     dec counter
     beq exit
     jmp continue
 exit:
+    sinValueTest(75, tempRes1)  // Expecting 0.965, 247 in Q8.8
+    sinValueTest(57, tempRes2)  // Expecting 0.838, 214 in Q8.8
+    sinValueTest(45, tempRes3)  // Expecting 0.707, 181 in Q8.8
+    sinValueTest(23, tempRes4)  // Expecting 0.390, 100 in Q8.8
 	rts	
 
 .print("tmpRes:  $" + toHexString(tmpRes))
@@ -35,27 +42,43 @@ exit:
 .print("sinTable start:  $" + toHexString(sinTable))
 .print("sinTable end:  $" + toHexString(reminder-1))
 
+.print("tempRes1:  $" + toHexString(tempRes1))
+.print("tempRes2:  $" + toHexString(tempRes2))
+.print("tempRes3:  $" + toHexString(tempRes3))
+.print("tempRes4:  $" + toHexString(tempRes4))
+
+.macro sinValueTest(degree, resAddr) {
+    lda #degree // Multiply by 2 in A, move to X
+    asl
+    tax
+
+    lda sinTable, x     // Save low-byte of value to res
+    sta resAddr
+
+    lda sinTable+1, x   // Save hi-byte of value to res
+    sta resAddr+1
+}
 *=$1800 "Data"
     tmpDegree: .word 0
     tmpRes: .word 0
     align: .byte 0
     sinValues: .fill 256, i
     sinTable: .fillword 256, 0
-	//sinValues: .fillword 256, i
-	//sinTable: .fillword 256, 0
+
+    tempRes1: .word 0
+    tempRes2: .word 0
+    tempRes3: .word 0
+    tempRes4: .word 0
+
 	reminder: .word 0
 	degree90: .word 23040 // 23040 is 90 in fixedPoint notation
 	degree1to90: .word 3 // 23040 is 90 in fixedPoint notation
 	one: .word 256
-	counter: .byte 90
+	counter: .byte 180 // 90 * 2 because word-base output table
 	
 	tmp: .dword 0
 	tmp2: .dword 0
 	tmp3: .dword 0
-
-.print("tmp:  $" + toHexString(tmp))
-.print("tmp2: $" + toHexString(tmp2))
-.print("tmp3: $" + toHexString(tmp3))
 
 // implements parabola approximation 1-((A-90)/90)^2
 .macro sineByParabola(degree, resAddr) {
