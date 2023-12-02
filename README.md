@@ -16,6 +16,7 @@ These I used to better understand the limitations and mechanisms
 * [Fixed-point numbers tests](learn/04fixedPointNumber01/readme.md)
 * [Fixed-point numbers arithmetics tests](learn/05fixedPointArithmetics01/readme.md)
 * [Sine table generation v0.1](learn/06sineTable01/readme.md)
+* [Sine table generation v0.2 - full table with lookup routine](learn/07sineTable02/readme.md)
 ### Final product
 TBD
 ## Running
