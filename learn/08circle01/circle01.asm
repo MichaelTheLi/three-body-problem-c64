@@ -22,7 +22,7 @@ wait_vsync:
 
     ldy #0
 	lda #32
-	sta ($fb),y
+	//sta ($fb),y
 
 	lda #<SCREEN_START
 	ldy #>SCREEN_START
