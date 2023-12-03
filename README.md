@@ -17,6 +17,7 @@ These I used to better understand the limitations and mechanisms
 * [Fixed-point numbers arithmetics tests](learn/05fixedPointArithmetics01/readme.md)
 * [Sine table generation v0.1](learn/06sineTable01/readme.md)
 * [Sine table generation v0.2 - full table with lookup routine](learn/07sineTable02/readme.md)
+* [Circling letter A, sin/cos example](learn/08circle01/readme.md)
 ### Final product
 TBD
 ## Running
