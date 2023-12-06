@@ -22,7 +22,7 @@ wait_vsync:
 
     ldy #0
 	lda #32
-	//sta ($fb),y
+	sta ($fb),y
 
 	lda #<SCREEN_START
 	ldy #>SCREEN_START
@@ -59,22 +59,22 @@ addx:
 	lda #1
 	sta ($fb),y
 
-    // Update cx
+    // Update cy
     lda degree
     sta degreeTmp
     lda degree+1
     sta degreeTmp+1
     sinValue(degreeTmp, sinValue, sin360Deg, sin90Deg, sinZero, sinTmp, sin2Tmp, sinDegree, quad)
-    mul16bit(sinValue, radius, x)
-    scaleDownFixedPoint(8, x)
-    add16bit(centerx, x, cx)
-
-    // Update cy
-    add16bit(degree, sin90Deg, degreeTmp2)
-    sinValue(degreeTmp2, cosValue, sin360Deg, sin90Deg, sinZero, sinTmp, sin2Tmp, sinDegree, quad)
-    mul16bit(cosValue, radius, y)
+    mul16bit(sinValue, radius, y)
     scaleDownFixedPoint(8, y)
     add16bit(centery, y, cy)
+
+    // Update cx
+    add16bit(degree, sin90Deg, degreeTmp2)
+    sinValue(degreeTmp2, cosValue, sin360Deg, sin90Deg, sinZero, sinTmp, sin2Tmp, sinDegree, quad)
+    mul16bit(cosValue, radius, x)
+    scaleDownFixedPoint(8, x)
+    add16bit(centerx, x, cx)
 
     add16bit(degree, degreeRate, degree)
 
