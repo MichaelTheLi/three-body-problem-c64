@@ -21,19 +21,6 @@
     // Positions at the center of 320 x 200 screen
     lda #170
     sta $D000
-    //lda $D010
-    //ora #%00000001
-    //sta $D010
-
-    lda #140
-    sta $D001
-    //lda $D010
-    //ora #%0000010
-    //sta $D010
-
-    // Positions at the center of 320 x 200 screen
-    lda #170
-    sta $D000
 
     lda #140
     sta $D001
