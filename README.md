@@ -20,6 +20,7 @@ These I used to better understand the limitations and mechanisms
 * [Circling letter A, sin/cos example](learn/08circle01/readme.md)
 * [Sprite basics, just show](learn/09sprite01/readme.md)
 * [Circling sprite](learn/10spriteCircle/readme.md)
+* [Fixed point](learn/11fixedPointScalingFactors01/readme.md)
 ### Final product
 TBD
 ## Running
