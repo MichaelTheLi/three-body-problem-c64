@@ -19,3 +19,7 @@ Results looks similar to [wiki info about scaling factors](https://en.wikipedia.
 ![debugger1.png](images/debugger2.png)
 
 Again, as expected
+
+## Update after part 2
+
+Not an actual fixed-point arithmetics, multiplying by the actual 2 is not the same as multiplying in fixed-point. Should be 2 in FP, like 2 * 256 in Q8.8
