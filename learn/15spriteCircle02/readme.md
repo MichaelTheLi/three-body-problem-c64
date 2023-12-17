@@ -2,7 +2,8 @@
 
 ## Tasks
 
-* Make sine calculated in Q1.15 format
+* Make sine calculated in Q3.13 format
+* Make multiplication/shifts work with negative values correctly
 
 ## Results
 

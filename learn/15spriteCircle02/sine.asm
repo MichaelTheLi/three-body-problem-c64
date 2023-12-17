@@ -118,14 +118,13 @@ exit:
 // implements parabola approximation 1-((A-90)/90)^2
 .macro sineByParabola(degree, resAddr, degree90, tmp, tmp2, tmp3, one, f) {
     subFixedPoint(degree90, degree, tmp2)
-    //shiftLeft32bit(f, tmp2)
-    mulFixedPoint(tmp2, degree1to90, tmp) // Replaced  x / 90  with  x * (1/90)
-    //shiftRight32bit(f*2, tmp)
+    mul16bit(tmp2, degree1to90, tmp)    // Replaced  x / 90  with  x * (1/90)
+                                        // Also multiplying in simple int format,
+                                        // so more chances to fit into 16bit
 
     copy32bit(tmp, tmp2)
 
-    mulFixedPoint(tmp, tmp2, tmp3)
-    shiftRight32bit(f, tmp3)
+    mulFixedPoint(tmp, tmp2, tmp3, f)
 
-    subFixedPoint(one, tmp3, resAddr) 				// 256 is 1 in fixedPoint notation
+    subFixedPoint(one, tmp3, resAddr)
 }

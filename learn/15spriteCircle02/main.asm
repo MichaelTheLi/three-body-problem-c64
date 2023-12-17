@@ -4,7 +4,7 @@
     jmp $4000
 
 .const CLEAR_SCREEN_KERNAL_ADDR = $E544
-.const FP = 8
+.const FP = 13
 .const FP2 = pow(2, FP)
 
 *=$4000 "Main"
@@ -103,7 +103,7 @@ wait_vsync:
     sinTmp: .word 0
     sin2Tmp: .word 0
 
-    radius: .word 50
+    radius: .word 20
     degreeRate: .word 1
     degree: .word 30
     sinValue: .dword 0

@@ -24,6 +24,7 @@
 
 // See https://codebase64.org/doku.php?id=base:16bit_multiplication_32-bit_product
 .macro mul16bit(multiplier, multiplicand, product) {
+// TODO Not fit for the nevative numbers, upper bits left as zeros
     lda	#$00
     sta	product+2		// clear upper bits of product
     sta	product+3
@@ -39,6 +40,44 @@ shift_r:
     lda	product+3
     adc	multiplicand+1
 rotate_r:	
+    ror					// rotate partial product
+    sta	product+3
+    ror	product+2
+    ror	product+1
+    ror	product
+    dex
+    bne	shift_r
+}
+
+// See https://codebase64.org/doku.php?id=base:16bit_multiplication_32-bit_product
+.macro mul16bitNegative(multiplier, multiplicand, product) {
+    lda multiplier+1 // Check upper bit for MSB
+    asl
+    bcs set_upper
+
+zero_upper:
+    lda	#$00
+    sta	product+2		// clear upper bits of product
+    sta	product+3
+    jmp continue
+set_upper:
+    lda	#$ff
+    sta	product+2		// clear upper bits of product
+    sta	product+3
+
+continue:
+    ldx	#$10			// set binary count to 16
+shift_r:
+    ror	multiplier+1	// divide multiplier by 2
+    ror	multiplier
+    bcc	rotate_r
+    lda	product+2		// get upper half of product and add multiplicand
+    clc
+    adc	multiplicand
+    sta	product+2
+    lda	product+3
+    adc	multiplicand+1
+rotate_r:
     ror					// rotate partial product
     sta	product+3
     ror	product+2
@@ -88,6 +127,11 @@ shift:
 }
 
 .macro shiftRight16bit(num, addr) {
+// TODO Not fit for nevative values
+//      lda addr+1       // Load the MSB
+//      asl              // Copy the sign bit into C
+//      ror addr+1
+//      ror addr
 .if (num > 0) {
     ldx #num
 scaleResult:

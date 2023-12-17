@@ -1,2 +1,2 @@
 include Makefile.common
-filename=./learn/14sineAccuracyTest01/main
+filename=./learn/15spriteCircle02/main
