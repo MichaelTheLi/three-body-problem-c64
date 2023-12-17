@@ -15,9 +15,9 @@
 }
 
 .macro divFixedPoint(dividend, divisor, remainder) {
-    scaleUpFixedPoint(6, dividend)
+    //scaleUpFixedPoint(6, dividend)
     div16bit(dividend, divisor, remainder)
-    scaleUpFixedPoint(8-6, dividend) // 8-6 = 2
+    //scaleUpFixedPoint(f-6, dividend)
 }
 
 .macro scaleUpFixedPoint(num, addr) {

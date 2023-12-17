@@ -88,7 +88,7 @@ exit:
     sta resAddr+1
 }
 
-.macro generateSineTable(counter, sinValues, sinTable, tmpDegree, tmpRes, tmp, tmp2, tmp3, one) {
+.macro generateSineTable(counter, sinValues, sinTable, tmpDegree, tmpRes, tmp, tmp2, tmp3, one, f) {
 continue:
     lda counter
     lsr
@@ -97,14 +97,9 @@ continue:
     lda sinValues,x
     sta tmpDegree
 
-    ldx #8
-scaleDegree:
-    asl tmpDegree
-    rol tmpDegree+1
-    dex
-    bne	scaleDegree
+	//shiftLeft16bit(f, tmpDegree)
 
-	sineByParabola(tmpDegree, tmpRes, degree90, tmp, tmp2, tmp3, one)
+	sineByParabola(tmpDegree, tmpRes, degree90, tmp, tmp2, tmp3, one, f)
 
     ldx counter
 
@@ -121,25 +116,16 @@ exit:
 }
 
 // implements parabola approximation 1-((A-90)/90)^2
-.macro sineByParabola(degree, resAddr, degree90, tmp, tmp2, tmp3, one) {
-	subFixedPoint(degree90, degree, tmp2)
-	//divFixedPoint(tmp, degree90, tmp2)
-	mulFixedPoint(tmp2, degree1to90, tmp) // Replaced  x / 90  with  x * (1/90)
+.macro sineByParabola(degree, resAddr, degree90, tmp, tmp2, tmp3, one, f) {
+    subFixedPoint(degree90, degree, tmp2)
+    //shiftLeft32bit(f, tmp2)
+    mulFixedPoint(tmp2, degree1to90, tmp) // Replaced  x / 90  with  x * (1/90)
+    //shiftRight32bit(f*2, tmp)
 
-	lda tmp
-	sta tmp2
-	lda tmp+1
-	sta tmp2+1
-	lda tmp+2
-	sta tmp2+2
-	lda tmp+3
-	sta tmp2+3
+    copy32bit(tmp, tmp2)
 
-	mulFixedPoint(tmp, tmp2, tmp3)
-	lda tmp3
-	sta resAddr
-	lda tmp3 + 1
-	sta resAddr + 1
+    mulFixedPoint(tmp, tmp2, tmp3)
+    shiftRight32bit(f, tmp3)
 
-	subFixedPoint(one, tmp3, resAddr) 				// 256 is 1 in fixedPoint notation
+    subFixedPoint(one, tmp3, resAddr) 				// 256 is 1 in fixedPoint notation
 }

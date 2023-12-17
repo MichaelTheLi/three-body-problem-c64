@@ -8,7 +8,7 @@
 .const FP2 = pow(2, FP)
 
 *=$4000 "Main"
-    generateSineTable(counter, sinValues, sinTable, tmpDegree, tmpRes, tmp, tmp2, tmp3, one)
+    generateSineTable(counter, sinValues, sinTable, tmpDegree, tmpRes, tmp, tmp2, tmp3, one, FP)
 
     // Enable sprite #0 and #1 by setting 1-th and 0-th bit
     lda #%00000011
@@ -50,14 +50,14 @@ wait_vsync:
     sta degreeTmp+1
     sinValue(degreeTmp, sinValue, sin360Deg, sin90Deg, sinZero, sinTmp, sin2Tmp, sinDegree, quad)
     mul16bit(sinValue, radius, y)
-    scaleDownFixedPoint(FP, y)
+    shiftRight32bit(FP, y)
     add16bit(centery, y, cy)
 
     // Update y
     add16bit(degree, sin90Deg, degreeTmp2)
     sinValue(degreeTmp2, cosValue, sin360Deg, sin90Deg, sinZero, sinTmp, sin2Tmp, sinDegree, quad)
     mul16bit(cosValue, radius, x)
-    scaleDownFixedPoint(FP, x)
+    shiftRight32bit(FP, x)
     add16bit(centerx, x, cx)
 
     add16bit(degree, degreeRate, degree)
@@ -87,11 +87,11 @@ wait_vsync:
     sinValues: .fill 180, i
     sinTable: .fillword 180, 0
 	one: .word 1 * FP2
-	counter: .byte 180 // 90 * 2 because word-base output table
+	counter: .byte 90 * 2 // 90 * 2 because word-base output table
 	tmp: .dword 0
 	tmp2: .dword 0
 	tmp3: .dword 0
-	degree90: .word 90 * FP2 // 23040 is 90 in fixedPoint notation
+	degree90: .word 90 // 23040 is 90 in fixedPoint notation
 	degree1to90: .word ceil(1 / 90 * FP2) // 11 is 1/90 in Q6.10fixedPoint notation
 
     quad: .byte 0
@@ -103,9 +103,9 @@ wait_vsync:
     sinTmp: .word 0
     sin2Tmp: .word 0
 
-    radius: .word FP2 * 50 // Fixed point val
+    radius: .word 50
     degreeRate: .word 1
-    degree: .word 0
+    degree: .word 30
     sinValue: .dword 0
     cosValue: .dword 0
     degreeTmp: .word 0
@@ -161,5 +161,13 @@ wait_vsync:
 
 .print("x:  $" + toHexString(x))
 .print("y:  $" + toHexString(y))
+.print("deg:  $" + toHexString(degree))
+.print("sin:  $" + toHexString(sinValue))
+.print("cos:  $" + toHexString(cosValue))
+.print("tmp:  $" + toHexString(tmp))
+.print("tmp2:  $" + toHexString(tmp2))
+.print("tmp3:  $" + toHexString(tmp3))
+.print("sinTable: $" + toHexString(sinTable))
+.print("sinTable_30: $" + toHexString(sinTable+30*2))
 .print(FP2)
 .print(ceil(1 / 90 * FP2))

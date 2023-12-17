@@ -1,2 +1,3 @@
 include Makefile.common
-filename=TBD # TODO Not ready yet, working on "learn"
+#filename=./learn/14spriteCircle02/main
+filename=./learn/13fixedPointScalingFactors03/main

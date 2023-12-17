@@ -4,6 +4,9 @@ build:
 debug: build
 	open /Applications/RetroDebugger/RetroDebugger.app $(filename).prg
 
+debugLocal: build
+	open /Users/alive/Library/Developer/Xcode/DerivedData/c64d-feypolsvjnblnzbtiotpvbhdpabm/Build/Products/Debug/Retro\ Debugger.app $(filename).prg
+
 run: build
 	/Applications/vice-x86-64-gtk3-3.7.1/bin/x64sc $(filename).prg
 

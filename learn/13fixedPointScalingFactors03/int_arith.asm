@@ -46,15 +46,6 @@ rotate_r:
     ror	product
     dex
     bne	shift_r
-
-    ldx #8  			// 8 is n from Qm.n fixed point format, Q8.8 in our code
-scaleBack:
-    lsr product+3
-    ror product+2
-    ror product+1
-    ror product
-    dex
-    bne	scaleBack
 }
 
 .macro div16bit(dividend, divisor, remainder) {
@@ -86,6 +77,7 @@ skip:
 }
 
 .macro shiftLeft16bit(num, addr) {
+.if (num > 0) {
     ldx #num
 shift:
     asl addr
@@ -93,12 +85,49 @@ shift:
     dex
     bne	shift
 }
+}
 
 .macro shiftRight16bit(num, addr) {
+.if (num > 0) {
     ldx #num
 scaleResult:
     lsr addr+1
     ror addr
     dex
     bne	scaleResult
+}
+}
+
+.macro shiftLeft32bit(num, addr) {
+.if (num > 0) {
+    ldx #num
+shift:
+    asl addr
+    rol addr+1
+    rol addr+2
+    rol addr+3
+    dex
+    bne	shift
+}
+}
+
+.macro shiftRight32bit(num, addr) {
+.if (num > 0) {
+    ldx #num
+scaleResult:
+    lsr addr+3
+    ror addr+2
+    ror addr+1
+    ror addr
+    dex
+    bne	scaleResult
+}
+}
+
+.macro copy16bit(source, dest) {
+    lda source
+    sta dest
+
+    lda source + 1
+    sta dest + 1
 }
