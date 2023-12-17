@@ -77,6 +77,7 @@ skip:
 }
 
 .macro shiftLeft16bit(num, addr) {
+.if (num > 0) {
     ldx #num
 shift:
     asl addr
@@ -84,8 +85,10 @@ shift:
     dex
     bne	shift
 }
+}
 
 .macro shiftRight16bit(num, addr) {
+.if (num > 0) {
     ldx #num
 scaleResult:
     lsr addr+1
@@ -93,8 +96,10 @@ scaleResult:
     dex
     bne	scaleResult
 }
+}
 
 .macro shiftLeft32bit(num, addr) {
+.if (num > 0) {
     ldx #num
 shift:
     asl addr
@@ -104,8 +109,10 @@ shift:
     dex
     bne	shift
 }
+}
 
 .macro shiftRight32bit(num, addr) {
+.if (num > 0) {
     ldx #num
 scaleResult:
     lsr addr+3
@@ -114,6 +121,7 @@ scaleResult:
     ror addr
     dex
     bne	scaleResult
+}
 }
 
 .macro copy16bit(source, dest) {

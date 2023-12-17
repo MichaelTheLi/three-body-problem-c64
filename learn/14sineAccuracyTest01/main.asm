@@ -1,6 +1,6 @@
 #import "fp_arith.asm"
 
-.const FP = 11
+.const FP = 13
 .const FP2 = pow(2, FP)
 
 *=$1000 "Start"
@@ -20,16 +20,15 @@
 .macro sineByParabola(degree, resAddr, degree90, tmp, tmp2, tmp3, one, f) {
 label:
     subFixedPoint(degree90, degree, tmp2)
-    //shiftLeft32bit(f, tmp2)
-    mulFixedPoint(tmp2, degree1to90, tmp) // Replaced  x / 90  with  x * (1/90)
-    //shiftRight32bit(f*2, tmp)
+    mul16bit(tmp2, degree1to90, tmp)    // Replaced  x / 90  with  x * (1/90)
+                                        // Also multiplying in simple int format,
+                                        // so more chances to fit into 16bit
 
     copy32bit(tmp, tmp2)
 
-    mulFixedPoint(tmp, tmp2, tmp3)
-    shiftRight32bit(f, tmp3)
+    mulFixedPoint(tmp, tmp2, tmp3, f)
 
-    subFixedPoint(one, tmp3, resAddr) 				// 256 is 1 in fixedPoint notation
+    subFixedPoint(one, tmp3, resAddr)
 }
 
 .print("deg:    $" + toHexString(degree))
@@ -39,4 +38,5 @@ label:
 .print("tmp3:   $" + toHexString(tmp3))
 .print("FP:     " + FP)
 .print("FP2:    " + FP2)
-.print(ceil(1 / 90 * FP2))
+.print(ceil((1 / 90) * FP2))
+.print(ceil((1 / 90) * FP2) / FP2)
