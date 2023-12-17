@@ -21,6 +21,9 @@ These I used to better understand the limitations and mechanisms
 * [Sprite basics, just show](learn/09sprite01/readme.md)
 * [Circling sprite](learn/10spriteCircle/readme.md)
 * [Fixed point](learn/11fixedPointScalingFactors01/readme.md)
+* [More accurate usage of fixed point](learn/12fixedPointScalingFactors02/readme.md)
+* [More experiments with fixed point](learn/13fixedPointScalingFactors03/readme.md)
+* [Circling sprite with better precision](learn/14spriteCircle02/readme.md)
 ### Final product
 TBD
 ## Running
