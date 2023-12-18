@@ -5,11 +5,9 @@
 .macro sinValue(degreeAddr, resAddr, sin360Deg, sin90Deg, sinZero, sinTmp, sin2Tmp, sinDegree, quad) {
     div16bit(degreeAddr, sin360Deg, sinDegree)
 
-    shiftRight16bit(1, sinDegree) // div degree by 2 so we can process as 8-bit
-    .print("sinDegree:  $" + toHexString(sinDegree))
-    lda sinDegree
-
-    shiftLeft16bit(1, sinDegree)
+    copy16bit(sinDegree, sinTmp)
+    shiftRight16bit(1, sinTmp) // div degree by 2 so we can process as 8-bit
+    lda sinTmp
 
     cmp #135
     bcs iv
@@ -46,7 +44,6 @@ iv:
     jmp sinCalc
 
 sinCalc:
-    .print("sinDegree:  $" + toHexString(sinDegree))
     sinValueTableLookup(sinDegree, sinTable, resAddr)
 
 chk3:
@@ -118,9 +115,11 @@ exit:
 // implements parabola approximation 1-((A-90)/90)^2
 .macro sineByParabola(degree, resAddr, degree90, tmp, tmp2, tmp3, one, f) {
     subFixedPoint(degree90, degree, tmp2)
+    // degree1to90 always in Q1.15
     mul16bit(tmp2, degree1to90, tmp)    // Replaced  x / 90  with  x * (1/90)
                                         // Also multiplying in simple int format,
                                         // so more chances to fit into 16bit
+    shiftRight32bit(15-f, tmp)
 
     copy32bit(tmp, tmp2)
 

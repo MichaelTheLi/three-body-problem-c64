@@ -4,7 +4,7 @@
     jmp $4000
 
 .const CLEAR_SCREEN_KERNAL_ADDR = $E544
-.const FP = 13
+.const FP = 9
 .const FP2 = pow(2, FP)
 
 *=$4000 "Main"
@@ -76,8 +76,8 @@ wait_vsync:
     x: .dword 0
     y: .dword 0
 
-    cx: .word 0
-    cy: .word 0
+    cx: .word 170
+    cy: .word 140
 
     centerx: .word 170
     centery: .word 140
@@ -92,7 +92,7 @@ wait_vsync:
 	tmp2: .dword 0
 	tmp3: .dword 0
 	degree90: .word 90 // 23040 is 90 in fixedPoint notation
-	degree1to90: .word ceil(1 / 90 * FP2) // 11 is 1/90 in Q6.10fixedPoint notation
+	degree1to90: .word ceil(1 / 90 * pow(2, 15))
 
     quad: .byte 0
     sinZero: .word 0
@@ -103,9 +103,9 @@ wait_vsync:
     sinTmp: .word 0
     sin2Tmp: .word 0
 
-    radius: .word 20
+    radius: .word 80
     degreeRate: .word 1
-    degree: .word 30
+    degree: .word 0
     sinValue: .dword 0
     cosValue: .dword 0
     degreeTmp: .word 0
@@ -171,3 +171,4 @@ wait_vsync:
 .print("sinTable_30: $" + toHexString(sinTable+30*2))
 .print(FP2)
 .print(ceil(1 / 90 * FP2))
+.print(ceil(1 / 90 * pow(2, 15)))
