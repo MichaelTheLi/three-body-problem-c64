@@ -25,6 +25,7 @@ These I used to better understand the limitations and mechanisms
 * [More experiments with fixed point](learn/13fixedPointScalingFactors03/readme.md)
 * [Sine accuracy tests](learn/14sineAccuracyTest01/readme.md)
 * [Circling sprite with better precision](learn/15spriteCircle02/readme.md)
+* [Output FP demo, with limited accuracy](learn/16outputFixedPointOnScreen01/readme.md)
 ### Final product
 TBD
 ## Running
