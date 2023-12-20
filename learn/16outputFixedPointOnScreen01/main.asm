@@ -9,9 +9,9 @@
 .const FP = 10
 .const FP2 = pow(2, FP)
 
-.const EXAMPLE_VALUE = 0.12345
+.const EXAMPLE_VALUE = 11.12345
 .const EXAMPLE_VALUE_IN_FP = ceil(EXAMPLE_VALUE * FP2)
-.const DIGITS = 5   // Limited to 32bit result of multiplication
+.const DIGITS = 3   // Limited to 32bit result of multiplication
                     // Value in fp format will be multiplied by 10 ^ DIGITS
                     // Even 127 (0.12345 in Q6.10) with 5 digits will become 12700000
                     // And final result after converting to int again(right shift by FP)
@@ -24,7 +24,7 @@
 
     mul16bit(value, digits, valueMultiplied)    // For digits 10 ^ 5 result somehow become garbage
                                                 // But results should fit into 32bit product
-    // shiftRight32bit(FP, valueMultiplied)
+    shiftRight32bit(FP, valueMultiplied)
     copy16bit(valueMultiplied, valueTmp)
     outputFp(valueTmp, DIGITS+3, DIGITS, 40 * 12 + 1, remainderTmp, base, FP)
 
