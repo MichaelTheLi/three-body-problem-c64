@@ -23,3 +23,6 @@ Intermediate result should be close to 12700000, and after converting back to in
 12402 should fit into 16bit
 
 But something goes wrong, and I got 4376928 after multiplication
+
+UPD: something goes wrong in totally different area, not in code, apparently.
+10 ^ 5 is 100 000 and can't fit into 16bit arguments of multiplication
