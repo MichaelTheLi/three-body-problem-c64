@@ -51,6 +51,33 @@ positionComputation:
     adc vx
     sta x
 
+    // Should calculate diff with center in FP
+    // Now trying to emnulate in integer, just for now
+    lda #140
+    cmp y
+    bcs top
+bottom:
+    lda #1
+    sta ay
+    jmp velocityComputationy
+top:
+    lda #255
+    sta ay
+
+velocityComputationy:
+    // Update velocity based on acceleration
+    lda vy
+    clc
+    adc ay
+    sta vy
+
+positionComputationy:
+    // Update position based on velocity
+    lda y
+    clc
+    adc vy
+    sta y
+
     lda #170
     adc x
     sta cx
@@ -68,7 +95,9 @@ positionComputation:
     vx: .byte 0
     ax: .byte 0
 
-    y: .byte 0
+    y: .byte 50
+    vy: .byte 0
+    ay: .byte 0
 
     cx: .byte 0
     cy: .byte 0
