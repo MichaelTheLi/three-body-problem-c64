@@ -23,7 +23,7 @@
 }
 
 // See https://codebase64.org/doku.php?id=base:16bit_multiplication_32-bit_product
-.macro mul16bit(multiplier, multiplicand, product) {
+.macro mul16bitPositive(multiplier, multiplicand, product) {
     lda	#$00
     sta	product+2		// clear upper bits of product
     sta	product+3
@@ -49,7 +49,7 @@ rotate_r:
 }
 
 // See https://codebase64.org/doku.php?id=base:16bit_multiplication_32-bit_product
-.macro mul16bitNegative(multiplier, multiplicand, product) {
+.macro mul16bit(multiplier, multiplicand, product) {
 checkMultiplier:
 	ldy #$00			    // .y will hold the sign of product, .x used in macro mul16bit. Should use jsr
 	lda multiplier+1
@@ -62,7 +62,7 @@ checkMultiplicand:
 	negate(multiplicand, 2)	// then factor2 := -factor2
 	iny				        // and switch sign
 doMultiplication:
-	mul16bit(multiplier, multiplicand, product) // do unsigned multiplication
+	mul16bitPositive(multiplier, multiplicand, product) // do unsigned multiplication
 	tya
 	and #$01			    // if .x is odd
 	beq quit

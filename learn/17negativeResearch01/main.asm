@@ -3,7 +3,7 @@
 *=$1000 "Start"
     copy16bit(value, valueTmp)
     copy16bit(digits, digitsTmp)
-    mul16bitNegative(valueTmp, digitsTmp, valueMultiplied)
+    mul16bit(valueTmp, digitsTmp, valueMultiplied)
 
     shiftLeft32bit(1, valueMultiplied)
     shiftRight32bit(1, valueMultiplied)
