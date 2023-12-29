@@ -27,6 +27,7 @@ These I used to better understand the limitations and mechanisms
 * [Circling sprite with better precision](learn/15spriteCircle02/readme.md)
 * [Output FP demo, with limited accuracy](learn/16outputFixedPointOnScreen01/readme.md)
 * [Negative routines](learn/17negativeResearch01/readme.md)
+* [Circling sprite with even better precision](learn/18spriteCircle03/readme.md)
 ### Final product
 TBD
 ## Running
