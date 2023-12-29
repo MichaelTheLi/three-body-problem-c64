@@ -7,17 +7,23 @@ Developed using these awesome tools:
 * [VICE emulator](https://vice-emu.sourceforge.io/)
 * [Retro Debugger](https://github.com/slajerek/RetroDebugger)
 * [KickAssembler](http://www.theweb.dk/KickAssembler/Main.html#frontpage)
-## Content 
+## Content
+
+### Final product
+TBD
+
 ### Learn
 These I used to better understand the limitations and mechanisms
 * [Single letter print](learn/01print01/readme.md)
 * [Single letter on-row moves](learn/02print02/readme.md)
 * [Single letter on-whole-screen moves](learn/03print03/readme.md)
+![debugger1.png](learn/03print03/images/screen.gif)
 * [Fixed-point numbers tests](learn/04fixedPointNumber01/readme.md)
 * [Fixed-point numbers arithmetics tests](learn/05fixedPointArithmetics01/readme.md)
 * [Sine table generation v0.1](learn/06sineTable01/readme.md)
 * [Sine table generation v0.2 - full table with lookup routine](learn/07sineTable02/readme.md)
 * [Circling letter A, sin/cos example](learn/08circle01/readme.md)
+![debugger1.png](learn/08circle01/images/debugger.gif)
 * [Sprite basics, just show](learn/09sprite01/readme.md)
 * [Circling sprite](learn/10spriteCircle/readme.md)
 * [Fixed point](learn/11fixedPointScalingFactors01/readme.md)
@@ -28,9 +34,10 @@ These I used to better understand the limitations and mechanisms
 * [Output FP demo, with limited accuracy](learn/16outputFixedPointOnScreen01/readme.md)
 * [Negative routines](learn/17negativeResearch01/readme.md)
 * [Circling sprite with even better precision](learn/18spriteCircle03/readme.md)
+![debugger1.png](learn/18spriteCircle03/images/debuggerQ3.13After.gif)
 * [Learning Acceleration to center](learn/19accelerateToCenter01/readme.md)
-### Final product
-TBD
+![debugger1.png](learn/19accelerateToCenter01/images/debugger2Axis.gif)
+
 ## Running
 Binaries can be found in releases on built from sources and can be run using C64 emulator like VICE or any online C64 emulators, load an .prg binary using the emulator's manuals.
 Most of the programs are executed by using `SYS 4096` C64 command 
