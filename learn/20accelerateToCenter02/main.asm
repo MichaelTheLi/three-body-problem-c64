@@ -4,7 +4,7 @@
 *=$1000 "Start"
     jmp $4000
 
-.const f = 8
+.const f = 6
 .const fValue = pow(2, f)
 
 *=$4000 "Main"
@@ -18,21 +18,21 @@
     setColorForSprite(1, 7)     // 13 is greenish
 
     setAddrPositionForSprite(0, cx, cy)
-    setPositionForSprite(1, CENTER_X, CENTER_Y)
+    setAddrPositionForSprite(1, center + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET, center + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET)
 
 loop:
-    waitForVsync()
-
-    setAddrPositionForSprite(0, cx, cy)
+    //waitForVsync()
 
     updateBody16bitFP(center, body, f)
 
+    setAddrPositionForSprite(0, cx, cy)
+
     lda #CENTER_X
-    adc body + BODY_POSITION_OFFSET + VECTOR_X_OFFSET
+    adc body + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET
     sta cx
 
     lda #CENTER_Y
-    adc body + BODY_POSITION_OFFSET + VECTOR_Y_OFFSET
+    adc body + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET
     sta cy
 
     jmp loop
@@ -41,17 +41,19 @@ loop:
 
 *=$2000 "Data"
     body:
-        .word (255 - 170), 50  // position
+        .word 30 * fValue, 35 * fValue  // position
+        .word 0, 0  // int position
         .word 0, 0  // velocity
         .word 0, 0  // acceleration
-        .word 1     // mass
-        .word 1     // inversed mass
+        .word 1 * fValue   // mass
+        .word 1 * fValue   // inversed mass
     center:
-        .word CENTER_X, CENTER_Y  // position
+        .word CENTER_X * fValue, CENTER_Y * fValue  // position
+        .word CENTER_X, CENTER_Y  // int position
         .word 0, 0  // velocity
         .word 0, 0  // acceleration
-        .word 1     // mass
-        .word 1     // inversed mass
+        .word 256   // mass
+        .word 256   // inversed mass
 
     cx: .byte 0
     cy: .byte 0

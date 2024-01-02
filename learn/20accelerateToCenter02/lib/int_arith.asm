@@ -126,8 +126,14 @@ shift:
 
 .macro shiftRight16bit(num, addr) {
 .if (num > 0) {
+    ldx #num
+scaleResult:
     lda addr + 1 // Will set carry for the first ROR op, to fill MSB after shift
-    shiftRight16bitPositive(num, addr)
+    asl
+    ror addr+1
+    ror addr
+    dex
+    bne	scaleResult
 }
 }
 
@@ -159,6 +165,7 @@ shift:
 .macro shiftRight32bit(num, addr) {
 .if (num > 0) {
     lda addr + 3 // Will set carry for the first ROR op, to fill MSB after shift
+    // TODO Doesn't work as expected
     shiftRight32bitPositive(num, addr)
 }
 }

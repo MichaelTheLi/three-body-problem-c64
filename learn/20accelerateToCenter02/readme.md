@@ -9,7 +9,13 @@
 
 ### Fixed point calculations
 
-![debugger1.png](images/debuggerQ3.13.gif)
+![debugger1.png](images/debuggerFixedPoint.gif)
+
+Issues faced:
+
+* doubleword vs word arithmetics mixed up in vector lib
+* Some tuning in scaling factor was necessary, Q6.10 overshooting. Now works in Q10.6 
+* VSync removed. Should update physics more often than graphics 
 
 ### Gravity law
 
@@ -33,7 +39,7 @@ where:
 
 #### Calculation
 
-TBD
+
 
 #### Result
 
