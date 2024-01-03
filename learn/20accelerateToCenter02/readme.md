@@ -20,7 +20,7 @@ Issues faced:
 ### Gravity law
 
 #### Gravity field
-`g = -1 * R * ((G * M) / d ^ 2)`
+`g = -1 * r * ((G * M) / d ^ 2)`
 
 where:
 
@@ -39,8 +39,8 @@ where:
 
 #### Calculation
 
-
+Without masses, just scale force with inverted distance square
 
 #### Result
-
-![debugger1.png](images/debuggerGravityForce.gif)
+None, will implement in the next try, need to check if division works correctly
+1
