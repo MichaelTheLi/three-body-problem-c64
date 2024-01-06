@@ -85,7 +85,30 @@ quit:
     }
 }
 
+// Remainder possibly has wrong sign
 .macro div16bit(dividend, divisor, remainder) {
+checkDividend:
+	ldy #$00			    // .y will hold the sign of product, .x used in macro mul16bit. Should use jsr
+	lda dividend+1
+	bpl checkDivisor	// if factor1 is negative
+	negate(dividend, 2)   // then factor1 := -factor1
+	iny				        // and switch sign
+checkDivisor:
+	lda divisor+1
+	bpl doDivision   // if factor2 is negative
+	negate(divisor, 2)	// then factor2 := -factor2
+	iny				        // and switch sign
+doDivision:
+    sty divisionSign
+	div16bitPositive(dividend, divisor, remainder) // do unsigned division
+	lda divisionSign
+	and #$01			    // if .x is odd
+	beq quit
+	negate(dividend, 2)	    // then product := -product
+quit:
+}
+
+.macro div16bitPositive(dividend, divisor, remainder) {
     lda #0	        // preset remainder to 0
 	sta remainder
 	sta remainder+1
@@ -112,6 +135,9 @@ skip:
 	dex
 	bne divloop
 }
+
+*=$1800 "Int arith data"
+    divisionSign: .byte 0
 
 .macro shiftLeft16bit(num, addr) {
 .if (num > 0) {

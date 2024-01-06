@@ -6,4 +6,4 @@
 
 ## Results
 
-TBD
+Now it works correctly
