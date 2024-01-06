@@ -18,6 +18,10 @@
 .macro divFixedPoint(dividend, divisor, remainder, f, scaleDiv) {
     shiftLeft16bit(scaleDiv, dividend)
     div16bit(dividend, divisor, remainder)
+.if (f-scaleDiv > 0) {
     shiftLeft16bit(f-scaleDiv, dividend)
+} else {
+    shiftRight16bit(scaleDiv-f, dividend)
+}
     shiftRight16bit(scaleDiv, remainder)
 }
