@@ -1,2 +1,2 @@
 include Makefile.common
-filename=./learn/21divisionTest01/main
+filename=./learn/22negativeDivisionTest01/main
