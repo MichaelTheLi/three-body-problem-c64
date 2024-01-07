@@ -1,101 +1,88 @@
+#import "lib/vector_arith.asm"
 #import "lib/graphics.asm"
-#import "physics.asm"
 
 *=$1000 "Start"
     jmp $4000
 
-.const f = 6
+.const f = 8
 .const fValue = pow(2, f)
 
 *=$4000 "Main"
-    // Enable sprite #0 and #1 by setting 1-th and 0-th bit
-    enableSprites(%00000011)
-
-    setPointerForSprite(0, $3EC0)
-    setPointerForSprite(1, $3E80)
-
-    setColorForSprite(0, 13)    // 13 is greenish
-    setColorForSprite(1, 7)     // 7 is yellowish
-
-    updateSpritePositionForBody(0, body)
-    updateSpritePositionForBody(1, center)
-
 loop:
-    //waitForVsync()
+    waitForVsync()
 
-    updateBody16bitFP(center, body, f)
+    calculateRealForce16bitFP(bodyPos, centerPos, forceVector, f)
 
-    updateSpritePositionForBody(0, body)
-    // updateSpritePositionForBody(1, center) // Center is not moving for now
+    rts
 
     jmp loop
 
 	rts	
 
+.macro calculateRealForce16bitFP(bodyPos, centerPos, forceVector, f) {
+    subVectors_16bitFP(
+        bodyPos,
+        centerPos,
+        distVectorTmp
+    )
+
+    copyVector_16bitFP(distVectorTmp, distVector)
+
+    mulVectorsWith16bitRes_16bit(
+        distVectorTmp,
+        distVector,
+        squaredLength
+    )
+
+    add16bit(squaredLength, squaredLength + 2, squaredLength + 2)
+    copy16bit(squaredLength + 2, squaredLength)
+
+    copyVector_16bitFP(oneVectorFP, forceVector)
+    // squaredLength actually not in FP, so it's all scaled up a bit
+    divVectors_16bitFP(forceVector, squaredLength, remainderVector, f, 6)
+
+lowerCheck:
+    lda forceVector
+    cmp #0
+    bne lowerY
+    lda #1
+    sta forceVector
+lowerY:
+    lda forceVector + 2
+    cmp #0
+    bne upperCheck
+    lda #1
+    sta forceVector + 2
+
+upperCheck:
+    compare16bit(forceVector, upperBoundVector, more, exit)
+
+more:
+    copyVector_16bitFP(upperBoundVector, forceVector)
+    jmp exit
+exit:
+}
+
 *=$2000 "Data"
-    body:
-        .word 30 * fValue, 50 * fValue  // position
-        .word 0, 0  // int position
-        .word 0, 0  // velocity
-        .word 0, 0  // acceleration
-        .word 1 * fValue   // mass
-        .word floor((1 / 0.1) * fValue)   // inversed mass
-        .byte 0, 0  // screen position
-    center:
-        .word 0 * fValue, 0 * fValue  // position
-        .word 0, 0  // int position
-        .word 0, 0  // velocity
-        .word 0, 0  // acceleration
-        .word 256   // mass
-        .word 256   // inversed mass
-        .byte 0, 0  // screen position
+    bodyPos: .word 150, 150
+    centerPos: .word 0, 0
+    forceVector: .word 0, 0
 
-// 250
-*=$3E80 "Sprite #0"
-    .byte 0, 126, 0
-    .byte 3, 255, 192
-    .byte 7, 255, 224
-    .byte 31, 255, 248
-    .byte 31, 255, 248
-    .byte 63, 255, 252
-    .byte 127, 255, 254
-    .byte 127, 255, 254
-    .byte 255, 255, 255
-    .byte 255, 255, 255
-    .byte 255, 255, 255
-    .byte 255, 255, 255
-    .byte 255, 255, 255
-    .byte 127, 255, 254
-    .byte 127, 255, 254
-    .byte 63, 255, 252
-    .byte 31, 255, 248
-    .byte 31, 255, 248
-    .byte 7, 255, 224
-    .byte 3, 255, 192
-    .byte 0, 126, 0
+    distVector: .word 0, 0
+    distVectorTmp: .word 0, 0
+    squaredLength: .word 0, 0
+    remainderVector: .word 0, 0
 
-// 251
-*=$3EC0 "Sprite #1"
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 126, 0
-    .byte 0, 126, 0
-    .byte 0, 126, 0
-    .byte 0, 126, 0
-    .byte 0, 126, 0
-    .byte 0, 126, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
-    .byte 0, 0, 0
+    oneVectorFP: .word 1 * fValue, 1 * fValue
+    upperBoundVector: .word 1024, 1024
+
+.function printAddr(name, varAddr) {
+    .return name + ":  $" + toHexString(varAddr)
+}
 
 .print(fValue)
+
+.print(printVectAddr("forceVector", forceVector))
+.print(printVectAddr("distVector", distVector))
+.print(printVectAddr("distVectorTmp", distVectorTmp))
+.print(printVectAddr("squaredLength", squaredLength))

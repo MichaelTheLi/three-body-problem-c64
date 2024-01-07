@@ -222,3 +222,55 @@ scaleResult:
     copy16bit(source, dest)
     copy16bit(source+2, dest+2)
 }
+
+.macro compare16bit(N1, N2, N2Bigger, N1Bigger) {
+	lda N1
+	cmp N2
+	lda N1+1
+	sbc N2+1
+	eor N1+1
+	bmi num1IsBigger
+	jmp num2IsBigger
+
+num2IsBigger:
+    jmp N2Bigger
+	jmp endOfAbsCompare
+
+num1IsBigger:
+    jmp N1Bigger
+
+endOfAbsCompare:
+}
+
+.macro compare16bitSigned(N1, N2, N2Bigger, N1Bigger) {
+	lda N1+1
+	eor N2+1
+	bmi differentSigns
+
+sameSigns:
+	lda N1
+	cmp N2
+	lda N1+1
+	sbc N2+1
+	eor N1+1
+	bmi num1IsBigger
+	jmp num2IsBigger
+
+differentSigns:
+	clc
+	lda N1
+	adc N2
+	lda N1+1
+	adc N2+1
+	eor N1+1
+	bmi num1IsBigger
+
+num2IsBigger:
+    jmp N2Bigger
+	jmp endOfAbsCompare
+
+num1IsBigger:
+    jmp N1Bigger
+
+endOfAbsCompare:
+}

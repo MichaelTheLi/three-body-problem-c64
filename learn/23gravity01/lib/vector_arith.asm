@@ -72,10 +72,15 @@
 *=$2800 "Temp vectors"
     mulTmp: .dword 0, 0
     divTmp: .word 0, 0
-    oneVector: .word 1 * divfValue, 1 * divfValue
+    oneVectorFPdiv: .word 1 * divfValue, 1 * divfValue
+    oneVector: .word 1, 1
 
-.print("mulTmp x:  $" + toHexString(mulTmp))
-.print("mulTmp y:  $" + toHexString(mulTmp + 4))
+.function printVectAddr(name, varAddr) {
+    .return name + "|  x: $" + toHexString(varAddr) + " y:" + " $" + toHexString(varAddr+2)
+}
 
-.print("oneVector x:  $" + toHexString(oneVector))
-.print("oneVector y:  $" + toHexString(oneVector + 2))
+.print(printVectAddr("mulTmp", mulTmp))
+.print(printVectAddr("oneVector", oneVector))
+.print(printVectAddr("oneVectorFP", oneVectorFP))
+.print(printVectAddr("mulTmp", mulTmp))
+
