@@ -20,6 +20,21 @@ loop:
 	rts	
 
 .macro calculateRealForce16bitFP(bodyPos, centerPos, forceVector, f) {
+negateCheckX:
+    compare16bit(centerPos,bodyPos, bodyXMore, checkY)
+
+bodyXMore:
+    lda #1
+    sta signByteVector
+
+checkY:
+    compare16bit(centerPos + 2, bodyPos + 2, bodyYMore, continueCalculation)
+
+bodyYMore:
+    lda #1
+    sta signByteVector + 1
+
+continueCalculation:
     subVectors_16bitFP(
         bodyPos,
         centerPos,
@@ -37,7 +52,7 @@ loop:
     add16bit(squaredLength, squaredLength + 2, squaredLength + 2)
     copy16bit(squaredLength + 2, squaredLength)
 
-    copyVector_16bitFP(oneVectorFP, forceVector)
+    copyVector_16bitFP(distVector, forceVector)
     // squaredLength actually not in FP, so it's all scaled up a bit
     divVectors_16bitFP(forceVector, squaredLength, remainderVector, f, 6)
 
@@ -55,17 +70,32 @@ lowerY:
     sta forceVector + 2
 
 upperCheck:
-    compare16bit(forceVector, upperBoundVector, more, exit)
+    compare16bit(forceVector, upperBoundVector, more, upperCheckY)
 
 more:
     copyVector_16bitFP(upperBoundVector, forceVector)
-    jmp exit
+
+upperCheckY:
+    compare16bit(forceVector + 2, upperBoundVector + 2, moreY, negateForceX)
+
+moreY:
+    copyVector_16bitFP(upperBoundVector + 2, forceVector + 2)
+
+negateForceX:
+    lda signByteVector
+    beq negateForceY
+    negate(forceVector, 2)
+
+negateForceY:
+    lda signByteVector + 1
+    beq exit
+    negate(forceVector + 2, 2)
 exit:
 }
 
 *=$2000 "Data"
-    bodyPos: .word 150, 150
-    centerPos: .word 0, 0
+    bodyPos: .word 25, 25
+    centerPos: .word 50, 50
     forceVector: .word 0, 0
 
     distVector: .word 0, 0
@@ -75,6 +105,7 @@ exit:
 
     oneVectorFP: .word 1 * fValue, 1 * fValue
     upperBoundVector: .word 1024, 1024
+    signByteVector: .byte 0, 0
 
 .function printAddr(name, varAddr) {
     .return name + ":  $" + toHexString(varAddr)

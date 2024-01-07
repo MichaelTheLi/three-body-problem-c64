@@ -21,7 +21,7 @@
     updateSpritePositionForBody(1, center)
 
 loop:
-    //waitForVsync()
+    waitForVsync()
 
     updateBody16bitFP(center, body, f)
 
@@ -32,11 +32,14 @@ loop:
 
 	rts	
 
+.const INITIAL_X = 70
+.const INITIAL_Y = 0
+
 *=$2000 "Data"
     body:
-        .word 30 * fValue, 50 * fValue  // position
-        .word 0, 0  // int position
-        .word 0, 0  // velocity
+        .word INITIAL_X * fValue, INITIAL_Y * fValue  // position
+        .word INITIAL_X, INITIAL_Y  // int position
+        .word 0, 170  // velocity
         .word 0, 0  // acceleration
         .word 1 * fValue   // mass
         .word floor((1 / 0.1) * fValue)   // inversed mass
@@ -49,6 +52,8 @@ loop:
         .word 256   // mass
         .word 256   // inversed mass
         .byte 0, 0  // screen position
+
+    oneVectorFP: .word 1 * fValue, 1 * fValue
 
 // 250
 *=$3E80 "Sprite #0"

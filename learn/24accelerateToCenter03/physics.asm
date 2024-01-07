@@ -49,8 +49,13 @@
 }
 
 .macro updateBody16bitFP(center, body, f) {
-    //calculateForce16bitFP(center, body, forceVectorTmp)
-    calculateRealForce16bitFP(center, body, forceVectorTmp, f)
+    calculateRealForce16bitFP(
+        center + BODY_INT_POSITION_OFFSET,
+        body + BODY_INT_POSITION_OFFSET,
+        forceVectorTmp,
+        f
+    )
+
     applyForce16BitFP(
         forceVectorTmp,
         body + BODY_INVERSED_MASS_OFFSET,
@@ -68,36 +73,29 @@
     shiftRight16bit(f, body + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET)
 }
 
-.macro calculateForce16bitFP(forceSourceBody, body, forceVectorTmp) {
-    // Calculate in int, still
-    // Should calculate diff with center in FP
-    // Now trying to emnulate in integer, just for now
-    compareExample16bitFP(
-        forceSourceBody + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET,
-        body + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET,
-        forceVectorTmp + VECTOR_X_OFFSET
-    )
+.macro calculateRealForce16bitFP(bodyPos, centerPos, forceVector, f) {
+negateCheckX:
+    compare16bit(centerPos, bodyPos, bodyXMore, checkY)
 
-    compareExample16bitFP(
-        forceSourceBody + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET,
-        body + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET,
-        forceVectorTmp + VECTOR_Y_OFFSET
-    )
-}
+bodyXMore:
+    lda #1
+    sta signByteVector
+checkY:
+    compare16bit(centerPos + 2, bodyPos + 2, bodyYMore, continueCalculation)
 
-// TODO Not working correctly
-.macro calculateRealForce16bitFP(forceSourceBody, body, forceVectorTmp, f) {
-    // Calculate in int, still
-    // Should calculate diff with center in FP
-    // Now trying to emnulate in integer, just for now
+bodyYMore:
+    lda #1
+    sta signByteVector + 1
 
+continueCalculation:
     subVectors_16bitFP(
-        body + BODY_INT_POSITION_OFFSET,
-        forceSourceBody + BODY_INT_POSITION_OFFSET,
+        bodyPos,
+        centerPos,
         distVectorTmp
     )
 
     copyVector_16bitFP(distVectorTmp, distVector)
+
     mulVectorsWith16bitRes_16bit(
         distVectorTmp,
         distVector,
@@ -106,33 +104,46 @@
 
     add16bit(squaredLength, squaredLength + 2, squaredLength + 2)
     copy16bit(squaredLength + 2, squaredLength)
-    copyVector_16bitFP(oneVector, forceVectorTmp)
-test:
-.print("test:  $" + toHexString(test))
-.print("exit2:  $" + toHexString(exit2))
-    // TODO Division result is wrong? Should check divisition
-    divVectors_16bitFP(forceVectorTmp, squaredLength, remainderVector, f, 8)
-exit2:
-}
 
-.macro compareExample16bitFP(vector1Component, vector2Component, vector3Component) {
-    lda vector1Component
-    sbc vector2Component
-    bmi more
-less:
+    copyVector_16bitFP(distVector, forceVector)
+    // squaredLength actually not in FP, so it's all scaled up a bit
+    divVectors_16bitFP(forceVector, squaredLength, remainderVector, f, 6)
+
+    jmp upperCheck
+lowerCheck:
+    lda forceVector
+    cmp #0
+    bne lowerY
     lda #1
-    sta vector3Component
-    lda #0
-    sta vector3Component + 1
+    sta forceVector
+lowerY:
+    lda forceVector + 2
+    cmp #0
+    bne upperCheck
+    lda #1
+    sta forceVector + 2
 
-    jmp exit
+upperCheck:
+    compare16bit(forceVector, upperBoundVector, more, upperCheckY)
+
 more:
-    lda #1
-    sta vector3Component
-    lda #0
-    sta vector3Component + 1
+    copyVector_16bitFP(upperBoundVector, forceVector)
 
-    negate(vector3Component, 2)
+upperCheckY:
+    compare16bit(forceVector + 2, upperBoundVector + 2, moreY, negateForceX)
+
+moreY:
+    copyVector_16bitFP(upperBoundVector + 2, forceVector + 2)
+
+negateForceX:
+    lda signByteVector
+    beq negateForceY
+    negate(forceVector, 2)
+
+negateForceY:
+    lda signByteVector + 1
+    beq exit
+    negate(forceVector + 2, 2)
 exit:
 }
 
@@ -143,6 +154,8 @@ exit:
     distVector: .word 0, 0
     distVectorTmp: .word 0, 0
     remainderVector: .word 0, 0
+    upperBoundVector: .word 256, 256
+    signByteVector: .byte 0, 0
 
 .print("forceVectorTmp x:  $" + toHexString(forceVectorTmp))
 .print("forceVectorTmp y:  $" + toHexString(forceVectorTmp + 2))
