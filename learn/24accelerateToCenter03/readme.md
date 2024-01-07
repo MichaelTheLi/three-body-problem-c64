@@ -1,21 +1,10 @@
-# Acceleration to center with fixed-point arithmetics and more accurate gravitation application
+# Acceleration to center with more accurate gravitation application
 
 ## Tasks
 
-* Fixed-point calculations
 * [Gravity law](https://en.wikipedia.org/wiki/Gravitational_acceleration) applied 
 
 ## Results
-
-### Fixed point calculations
-
-![debugger1.png](images/debuggerFixedPoint.gif)
-
-Issues faced:
-
-* doubleword vs word arithmetics mixed up in vector lib
-* Some tuning in scaling factor was necessary, Q6.10 overshooting. Now works in Q10.6 
-* VSync removed. Should update physics more often than graphics 
 
 ### Gravity law
 
@@ -41,6 +30,15 @@ where:
 
 Without masses, just scale force with inverted distance square
 
+Instead of direction vector distance vector is used, not normalized. Only works because later calculations in FP 
+
 #### Result
-None, will implement in the next try, need to check if division works correctly
-1
+
+![debugger.png](images/debugger.gif)
+
+Not quite there, but kinda close
+
+Issues:
+1. Looks like sometimes velocity is lost midair, some kind of glitch
+2. Close to center of gravity there is extreme values not handled by the "clamp" function at the end of calculate func
+3. Outer bounds also breaks force gravitational calculation

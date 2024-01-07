@@ -32,6 +32,16 @@
 .const BODY_SCREEN_POSITION         = BODY_INVERSED_MASS_OFFSET + BODY_INVERSED_MASS_SIZE
 .const BODY_SCREEN_POSITION_SIZE    = VAR_SIZE
 
+.print("Offsets")
+.print("" + BODY_POSITION_OFFSET + ": pos")
+.print("" + BODY_INT_POSITION_OFFSET + ": int_pos")
+.print("" + BODY_VELOCITY_OFFSET + ": vx")
+.print("" + BODY_ACCELERATION_OFFSET + ": ax")
+.print("" + BODY_MASS_OFFSET + ": mass")
+.print("" + BODY_INVERSED_MASS_OFFSET + ": inv_mass")
+.print("" + BODY_SCREEN_POSITION + ": screen_pos")
+
+
 .macro updateSpritePositionForBody(sprite, body) {
     lda #CENTER_X
     adc body + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET
@@ -50,8 +60,8 @@
 
 .macro updateBody16bitFP(center, body, f) {
     calculateRealForce16bitFP(
-        center + BODY_INT_POSITION_OFFSET,
         body + BODY_INT_POSITION_OFFSET,
+        center + BODY_INT_POSITION_OFFSET,
         forceVectorTmp,
         f
     )
@@ -63,14 +73,29 @@
         f
     )
 
-    calculateVelocityVector16bitFP(body + BODY_ACCELERATION_OFFSET, body + BODY_VELOCITY_OFFSET)
-    calculatePositionVector16bitFP(body + BODY_VELOCITY_OFFSET, body + BODY_POSITION_OFFSET)
+    addVectors_16bitFP(
+        body + BODY_ACCELERATION_OFFSET,
+        body + BODY_VELOCITY_OFFSET,
+        body + BODY_VELOCITY_OFFSET
+    )
+    addVectors_16bitFP(
+        body + BODY_VELOCITY_OFFSET,
+        body + BODY_POSITION_OFFSET,
+        body + BODY_POSITION_OFFSET
+    )
 
-    copy16bit(body + BODY_POSITION_OFFSET + VECTOR_X_OFFSET, body + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET)
+    copy16bit(
+        body + BODY_POSITION_OFFSET + VECTOR_X_OFFSET,
+        body + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET
+    )
     shiftRight16bit(f, body + BODY_INT_POSITION_OFFSET + VECTOR_X_OFFSET)
 
-    copy16bit(body + BODY_POSITION_OFFSET + VECTOR_Y_OFFSET, body + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET)
+    copy16bit(
+        body + BODY_POSITION_OFFSET + VECTOR_Y_OFFSET,
+        body + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET
+    )
     shiftRight16bit(f, body + BODY_INT_POSITION_OFFSET + VECTOR_Y_OFFSET)
+exit:
 }
 
 .macro calculateRealForce16bitFP(bodyPos, centerPos, forceVector, f) {
@@ -80,6 +105,7 @@ negateCheckX:
 bodyXMore:
     lda #1
     sta signByteVector
+
 checkY:
     compare16bit(centerPos + 2, bodyPos + 2, bodyYMore, continueCalculation)
 
@@ -109,40 +135,38 @@ continueCalculation:
     // squaredLength actually not in FP, so it's all scaled up a bit
     divVectors_16bitFP(forceVector, squaredLength, remainderVector, f, 6)
 
-    jmp upperCheck
 lowerCheck:
-    lda forceVector
-    cmp #0
-    bne lowerY
-    lda #1
-    sta forceVector
-lowerY:
-    lda forceVector + 2
-    cmp #0
-    bne upperCheck
-    lda #1
-    sta forceVector + 2
+    compare16bit(forceVector, lowerBoundVector, lowerCheckY, lowerMore)
+
+lowerMore:
+    copy16bit(lowerBoundVector, forceVector)
+
+lowerCheckY:
+    compare16bit(forceVector + 2, lowerBoundVector + 2, upperCheck, lowerMoreY)
+
+lowerMoreY:
+    copy16bit(lowerBoundVector + 2, forceVector + 2)
 
 upperCheck:
     compare16bit(forceVector, upperBoundVector, more, upperCheckY)
 
 more:
-    copyVector_16bitFP(upperBoundVector, forceVector)
+    copy16bit(upperBoundVector, forceVector)
 
 upperCheckY:
     compare16bit(forceVector + 2, upperBoundVector + 2, moreY, negateForceX)
 
 moreY:
-    copyVector_16bitFP(upperBoundVector + 2, forceVector + 2)
+    copy16bit(upperBoundVector + 2, forceVector + 2)
 
 negateForceX:
     lda signByteVector
-    beq negateForceY
+    bne negateForceY
     negate(forceVector, 2)
 
 negateForceY:
     lda signByteVector + 1
-    beq exit
+    bne exit
     negate(forceVector + 2, 2)
 exit:
 }
@@ -154,25 +178,17 @@ exit:
     distVector: .word 0, 0
     distVectorTmp: .word 0, 0
     remainderVector: .word 0, 0
-    upperBoundVector: .word 256, 256
+    lowerBoundVector: .word 1, 1
+    upperBoundVector: .word 1024, 1024
     signByteVector: .byte 0, 0
 
-.print("forceVectorTmp x:  $" + toHexString(forceVectorTmp))
-.print("forceVectorTmp y:  $" + toHexString(forceVectorTmp + 2))
-.print("squaredLength x:  $" + toHexString(squaredLength + 0))
-.print("squaredLength y:  $" + toHexString(squaredLength + 2))
-
-.print("distVector x:  $" + toHexString(distVector + 0))
-.print("distVector y:  $" + toHexString(distVector + 2))
+.print(printVectAddr("forceVectorTmp", forceVectorTmp))
+.print(printVectAddr("squaredLength", squaredLength))
+.print(printVectAddr("distVector", distVector))
+.print(printAddr("signByteVector", signByteVector))
 
 .macro applyForce16BitFP(forceVector, inversedMass, accelerationVector, f) {
-    mulVectorWithScalarWith16bitRes_16bitFP(forceVector, inversedMass, accelerationVector, f)
+    //(accelerationVector, inversedMass, forceVector, f)
+    copyVector_16bitFP(forceVector, accelerationVector)
 }
 
-.macro calculateVelocityVector16bitFP(accelerationVector, velocityVector) {
-    addVectors_16bitFP(velocityVector, accelerationVector, velocityVector)
-}
-
-.macro calculatePositionVector16bitFP(velocityVector, positionVector) {
-    addVectors_16bitFP(positionVector, velocityVector, positionVector)
-}

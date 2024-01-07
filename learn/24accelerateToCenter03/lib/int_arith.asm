@@ -274,3 +274,7 @@ num1IsBigger:
 
 endOfAbsCompare:
 }
+
+.function printAddr(name, varAddr) {
+    .return name + ":  $" + toHexString(varAddr)
+}

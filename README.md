@@ -49,6 +49,10 @@ These I used to better understand the limitations and mechanisms
 
 ![debugger1.png](learn/20accelerateToCenter02/images/debuggerFixedPoint.gif)
 
+* [24accelerateToCenter03](learn/24accelerateToCenter03/readme.md)
+ 
+![debugger1.png](learn/24accelerateToCenter03/images/debugger.gif)
+
 ## Running
 Binaries can be found in releases on built from sources and can be run using C64 emulator like VICE or any online C64 emulators, load an .prg binary using the emulator's manuals.
 Most of the programs are executed by using `SYS 4096` C64 command 

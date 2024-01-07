@@ -95,7 +95,7 @@ exit:
 
 *=$2000 "Data"
     bodyPos: .word 25, 25
-    centerPos: .word 50, 50
+    centerPos: .word 0, 0
     forceVector: .word 0, 0
 
     distVector: .word 0, 0

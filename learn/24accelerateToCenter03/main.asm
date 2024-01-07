@@ -4,7 +4,7 @@
 *=$1000 "Start"
     jmp $4000
 
-.const f = 6
+.const f = 4
 .const fValue = pow(2, f)
 
 *=$4000 "Main"
@@ -33,16 +33,16 @@ loop:
 	rts	
 
 .const INITIAL_X = 70
-.const INITIAL_Y = 0
+.const INITIAL_Y = 10
 
 *=$2000 "Data"
     body:
         .word INITIAL_X * fValue, INITIAL_Y * fValue  // position
         .word INITIAL_X, INITIAL_Y  // int position
-        .word 0, 170  // velocity
+        .word 0, 40  // velocity
         .word 0, 0  // acceleration
         .word 1 * fValue   // mass
-        .word floor((1 / 0.1) * fValue)   // inversed mass
+        .word 1//floor((1 / 0.01) * fValue)   // inversed mass
         .byte 0, 0  // screen position
     center:
         .word 0 * fValue, 0 * fValue  // position
@@ -54,7 +54,9 @@ loop:
         .byte 0, 0  // screen position
 
     oneVectorFP: .word 1 * fValue, 1 * fValue
-
+.print(printVectAddr("body_x", body + BODY_INT_POSITION_OFFSET))
+.print(printVectAddr("body_vx", body + BODY_VELOCITY_OFFSET))
+.print(printVectAddr("body_ax", body + BODY_ACCELERATION_OFFSET))
 // 250
 *=$3E80 "Sprite #0"
     .byte 0, 126, 0
