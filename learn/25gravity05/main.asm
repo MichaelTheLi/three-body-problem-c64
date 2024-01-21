@@ -28,18 +28,18 @@ loop:
 
     // Aplly all forces
     applyBodyForces16bitFP(center, body, f)
-    applyBodyForces16bitFP(center, body2, f)
+    //applyBodyForces16bitFP(center, body2, f)
 
     applyBodyForces16bitFP(body, center, f)
-    applyBodyForces16bitFP(body, body2, f)
+    //applyBodyForces16bitFP(body, body2, f)
 
-    applyBodyForces16bitFP(body2, center, f)
-    applyBodyForces16bitFP(body2, body, f)
+    //applyBodyForces16bitFP(body2, center, f)
+    //applyBodyForces16bitFP(body2, body, f)
 
     // Calculate velocities and positions
     updateBodyPos16bitFP(center, f)
     updateBodyPos16bitFP(body, f)
-    updateBodyPos16bitFP(body2, f)
+    //updateBodyPos16bitFP(body2, f)
 
     updateSpritePositionForBody(0, body)
     updateSpritePositionForBody(1, center)
@@ -49,7 +49,7 @@ loop:
 
 	rts
 
-.const INITIAL_X = 60
+.const INITIAL_X = 25
 .const INITIAL_Y = 0
 
 .const INITIAL_X_2 = 0
@@ -58,19 +58,19 @@ loop:
     body:
         .word INITIAL_X * fValue, INITIAL_Y * fValue  // position
         .word INITIAL_X, INITIAL_Y  // int position
-        .word 0, 720  // velocity
+        .word 0, 0  // velocity
         .word 0, 0  // acceleration
         .word 1 * fValue   // mass (not used for now)
-        .word (1/0.1) * fValue//floor((1 / 0.01) * fValue)   // inversed mass
+        .word ceil((1/8) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
         .byte 0, 0  // screen position
 
     body2:
         .word INITIAL_X_2 * fValue, INITIAL_Y_2 * fValue  // position
         .word INITIAL_X_2, INITIAL_Y_2  // int position
-        .word 60, 0  // velocity
+        .word 0, 0  // velocity
         .word 0, 0  // acceleration
         .word 1 * fValue   // mass (not used for now)
-        .word (1/0.3) * fValue//floor((1 / 0.01) * fValue)   // inversed mass
+        .word ceil((1/8) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
         .byte 0, 0  // screen position
     center:
         .word 0 * fValue, 0 * fValue  // position
@@ -78,7 +78,7 @@ loop:
         .word 0, 0  // velocity
         .word 0, 0  // acceleration
         .word 8 * fValue   // mass (not used for now)
-        .word (1/8) * fValue   // inversed mass
+        .word ceil((1/8) * fValue)   // inversed mass
         .byte 0, 0  // screen position
 
     oneVectorFP: .word 1 * fValue, 1 * fValue

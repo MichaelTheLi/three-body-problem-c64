@@ -130,6 +130,7 @@ exit:
     distVector: .word 0, 0
     distVectorTmp: .word 0, 0
     remainderVector: .word 0, 0
+    applyForceTmp: .word 0, 0
 
 .print(printVectAddr("forceVectorTmp", forceVectorTmp))
 .print(printVectAddr("squaredLength", squaredLength))
@@ -137,5 +138,8 @@ exit:
 
 .macro applyForce16BitFP(forceVector, inversedMass, accelerationVector, f) {
     mulVectorWithScalarWith16bitRes_16bitFP(forceVector, inversedMass, accelerationVector, f)
+    //mulVectorWithScalarWith16bitRes_16bitFP(forceVector, inversedMass, applyForceTmp, f)
+
+    //addVectors_16bitFP(accelerationVector, applyForceTmp, accelerationVector)
 }
 
