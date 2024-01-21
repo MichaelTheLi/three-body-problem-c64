@@ -72,13 +72,15 @@ quit:
 
 // Two complement form
 .macro negate(value, bytes) {
-    .for(var i=bytes-1;i>=0;i--)  {
+    .for(var i=0;i<bytes;i++)  {
         lda value+i
         eor #$ff
 
         .if (i == 0) {
             clc
             adc #$01
+        } else {
+            adc #$00
         }
 
         sta value+i

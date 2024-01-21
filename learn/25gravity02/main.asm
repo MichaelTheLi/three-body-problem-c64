@@ -4,7 +4,7 @@
 *=$1000 "Start"
     jmp $4000
 
-.const f = 4
+.const f = 8
 .const fValue = pow(2, f)
 
 *=$4000 "Main"
@@ -32,13 +32,14 @@ loop:
 
 	rts	
 
-.const INITIAL_X = 70
-.const INITIAL_Y = 10
+.const INITIAL_X = 50
+.const INITIAL_Y = 0
 
 *=$2000 "Data"
     body:
         .word INITIAL_X * fValue, INITIAL_Y * fValue  // position
         .word INITIAL_X, INITIAL_Y  // int position
+        //.word 0, 760  // velocity
         .word 0, 40  // velocity
         .word 0, 0  // acceleration
         .word 1 * fValue   // mass

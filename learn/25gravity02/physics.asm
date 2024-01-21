@@ -99,28 +99,14 @@ exit:
 }
 
 .macro calculateRealForce16bitFP(bodyPos, centerPos, forceVector, f) {
-negateCheckX:
-    compare16bit(centerPos, bodyPos, bodyXMore, checkY)
-
-bodyXMore:
-    lda #1
-    sta signByteVector
-
-checkY:
-    compare16bit(centerPos + 2, bodyPos + 2, bodyYMore, continueCalculation)
-
-bodyYMore:
-    lda #1
-    sta signByteVector + 1
-
-continueCalculation:
     subVectors_16bitFP(
-        bodyPos,
         centerPos,
+        bodyPos,
         distVectorTmp
     )
 
     copyVector_16bitFP(distVectorTmp, distVector)
+    copyVector_16bitFP(distVectorTmp, forceVector) // To use later, mulVectors will abs() its arguments
 
     mulVectorsWith16bitRes_16bit(
         distVectorTmp,
@@ -131,44 +117,8 @@ continueCalculation:
     add16bit(squaredLength, squaredLength + 2, squaredLength + 2)
     copy16bit(squaredLength + 2, squaredLength)
 
-    copyVector_16bitFP(distVector, forceVector)
     // squaredLength actually not in FP, so it's all scaled up a bit
-    divVectors_16bitFP(forceVector, squaredLength, remainderVector, f, 6)
-
-lowerCheck:
-    compare16bit(forceVector, lowerBoundVector, lowerCheckY, lowerMore)
-
-lowerMore:
-    copy16bit(lowerBoundVector, forceVector)
-
-lowerCheckY:
-    compare16bit(forceVector + 2, lowerBoundVector + 2, upperCheck, lowerMoreY)
-
-lowerMoreY:
-    copy16bit(lowerBoundVector + 2, forceVector + 2)
-
-upperCheck:
-    compare16bit(forceVector, upperBoundVector, more, upperCheckY)
-
-more:
-    copy16bit(upperBoundVector, forceVector)
-
-upperCheckY:
-    compare16bit(forceVector + 2, upperBoundVector + 2, moreY, negateForceX)
-
-moreY:
-    copy16bit(upperBoundVector + 2, forceVector + 2)
-
-negateForceX:
-    lda signByteVector
-    bne negateForceY
-    negate(forceVector, 2)
-
-negateForceY:
-    lda signByteVector + 1
-    bne exit
-    negate(forceVector + 2, 2)
-exit:
+    divVectors_16bitFP(forceVector, squaredLength, remainderVector, f, 8)
 }
 
 *=$3000 "Temp physics"
@@ -178,14 +128,10 @@ exit:
     distVector: .word 0, 0
     distVectorTmp: .word 0, 0
     remainderVector: .word 0, 0
-    lowerBoundVector: .word 1, 1
-    upperBoundVector: .word 1024, 1024
-    signByteVector: .byte 0, 0
 
 .print(printVectAddr("forceVectorTmp", forceVectorTmp))
 .print(printVectAddr("squaredLength", squaredLength))
 .print(printVectAddr("distVector", distVector))
-.print(printAddr("signByteVector", signByteVector))
 
 .macro applyForce16BitFP(forceVector, inversedMass, accelerationVector, f) {
     //(accelerationVector, inversedMass, forceVector, f)
