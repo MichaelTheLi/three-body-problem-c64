@@ -10,7 +10,11 @@ Developed using these awesome tools:
 ## Content
 
 ### Final product
-TBD
+
+![debugger1.png](learn/25gravity04/images/debugger.gif)
+
+Kinda-gravity calculated without masses, just like so `1/dist^2`.
+
 
 ### Learn
 These I used to better understand the limitations and mechanisms
@@ -60,6 +64,10 @@ These I used to better understand the limitations and mechanisms
 * [Working 2-body kind-of gravity](learn/25gravity03/readme.md)
 
 ![debugger1.png](learn/25gravity03/images/debugger.gif)
+
+* [Working 3-body kind-of gravity](learn/25gravity04/readme.md)
+
+![debugger1.png](learn/25gravity04/images/debugger.gif)
 
 ## Running
 Binaries can be found in releases on built from sources and can be run using C64 emulator like VICE or any online C64 emulators, load an .prg binary using the emulator's manuals.
