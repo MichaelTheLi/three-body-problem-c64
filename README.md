@@ -16,8 +16,11 @@ Developed using these awesome tools:
 Video is 4.5x of original speed
 
 #### Bonuses
+
 Some random positions
+
 ![debugger1.png](learn/25gravity05/images/second.gif)
+
 ![debugger1.png](learn/25gravity05/images/third.gif)
 
 ### Learn
@@ -72,6 +75,7 @@ These I used to better understand the limitations and mechanisms
 * [Working 3-body kind-of gravity](learn/25gravity04/readme.md)
 
 ![debugger1.png](learn/25gravity04/images/debugger.gif)
+
 Actually 2-body problem with changing center
 
 ## Running
