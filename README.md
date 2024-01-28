@@ -12,6 +12,7 @@ Developed using these awesome tools:
 ### Final product
 
 ![debugger1.png](learn/25gravity05/images/final.gif)
+
 Video is 4.5x of original speed
 
 #### Bonuses
