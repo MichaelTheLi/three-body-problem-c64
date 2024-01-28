@@ -23,7 +23,10 @@
 .const BODY_ACCELERATION_OFFSET = BODY_VELOCITY_OFFSET + BODY_VELOCITY_SIZE
 .const BODY_ACCELERATION_SIZE   = VECTOR_BYTE_SIZE
 
-.const BODY_MASS_OFFSET         = BODY_ACCELERATION_OFFSET + BODY_ACCELERATION_SIZE
+.const BODY_FORCE_OFFSET        = BODY_ACCELERATION_OFFSET + BODY_ACCELERATION_SIZE
+.const BODY_FORCE_SIZE          = VECTOR_BYTE_SIZE
+
+.const BODY_MASS_OFFSET         = BODY_FORCE_OFFSET + BODY_FORCE_SIZE
 .const BODY_MASS_SIZE           = VAR_SIZE
 
 .const BODY_INVERSED_MASS_OFFSET    = BODY_MASS_OFFSET + BODY_MASS_SIZE
@@ -58,6 +61,14 @@
     )
 }
 
+.macro initializeForcesCalc(body) {
+    lda #0
+    sta body + BODY_ACCELERATION_OFFSET
+    sta body + BODY_ACCELERATION_OFFSET + 1
+    sta body + BODY_ACCELERATION_OFFSET + 2
+    sta body + BODY_ACCELERATION_OFFSET + 3
+}
+
 .macro applyBodyForces16bitFP(center, body, f) {
     calculateRealForce16bitFP(
         body + BODY_INT_POSITION_OFFSET,
@@ -66,15 +77,17 @@
         f
     )
 
-    applyForce16BitFP(
-        forceVectorTmp,
+    collectForce(forceVectorTmp, body + BODY_FORCE_OFFSET)
+}
+
+.macro updateBodyPos16bitFP(body, f) {
+    applyCollectedForce16BitFP(
+        body + BODY_FORCE_OFFSET,
         body + BODY_INVERSED_MASS_OFFSET,
         body + BODY_ACCELERATION_OFFSET,
         f
     )
-}
 
-.macro updateBodyPos16bitFP(body, f) {
     addVectors_16bitFP(
         body + BODY_ACCELERATION_OFFSET,
         body + BODY_VELOCITY_OFFSET,
@@ -130,16 +143,16 @@ exit:
     distVector: .word 0, 0
     distVectorTmp: .word 0, 0
     remainderVector: .word 0, 0
-    applyForceTmp: .word 0, 0
 
 .print(printVectAddr("forceVectorTmp", forceVectorTmp))
 .print(printVectAddr("squaredLength", squaredLength))
 .print(printVectAddr("distVector", distVector))
 
-.macro applyForce16BitFP(forceVector, inversedMass, accelerationVector, f) {
-    mulVectorWithScalarWith16bitRes_16bitFP(forceVector, inversedMass, accelerationVector, f)
-    //mulVectorWithScalarWith16bitRes_16bitFP(forceVector, inversedMass, applyForceTmp, f)
+.macro collectForce(forceVector, bodyForceVector) {
+    addVectors_16bitFP(bodyForceVector, forceVector, bodyForceVector)
+}
 
-    //addVectors_16bitFP(accelerationVector, applyForceTmp, accelerationVector)
+.macro applyCollectedForce16BitFP(bodyForceVector, bodyInversedMass, bodyAccelerationVector, f) {
+    mulVectorWithScalarWith16bitRes_16bitFP(bodyForceVector, bodyInversedMass, bodyAccelerationVector, f)
 }
 

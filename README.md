@@ -11,8 +11,13 @@ Developed using these awesome tools:
 
 ### Final product
 
-TBD
+![debugger1.png](learn/25gravity05/images/final.gif)
+Video is 4.5x of original speed
 
+#### Bonuses
+Some random positions
+![debugger1.png](learn/25gravity05/images/second.gif)
+![debugger1.png](learn/25gravity05/images/third.gif)
 
 ### Learn
 These I used to better understand the limitations and mechanisms
@@ -67,6 +72,7 @@ These I used to better understand the limitations and mechanisms
 
 ![debugger1.png](learn/25gravity04/images/debugger.gif)
 Actually 2-body problem with changing center
+
 ## Running
 Binaries can be found in releases on built from sources and can be run using C64 emulator like VICE or any online C64 emulators, load an .prg binary using the emulator's manuals.
 Most of the programs are executed by using `SYS 4096` C64 command 

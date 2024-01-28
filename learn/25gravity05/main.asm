@@ -9,82 +9,105 @@
 
 *=$4000 "Main"
     // Enable sprite #0, #1 and #2 by setting 2-th, 1-th and 0-th bit
-    enableSprites(%00000111)
+    enableSprites(%00001111)
 
     setPointerForSprite(0, $3EC0)
-    setPointerForSprite(1, $3E80)
+    setPointerForSprite(1, $3EC0)
     setPointerForSprite(2, $3EC0)
+    setPointerForSprite(3, $3EC0)
 
     setColorForSprite(0, 13)    // 13 is greenish
     setColorForSprite(1, 7)     // 7 is yellowish
-    setColorForSprite(2, 10)     // 6 is redish
+    setColorForSprite(2, 10)     // 10 is light-red
+    setColorForSprite(3, 3)     // 3 is cyan
 
-    updateSpritePositionForBody(0, body)
-    updateSpritePositionForBody(1, center)
+    updateSpritePositionForBody(0, body0)
+    updateSpritePositionForBody(1, body1)
     updateSpritePositionForBody(2, body2)
+    updateSpritePositionForBody(3, body3)
 
 loop:
     waitForVsync()
 
-    // Aplly all forces
-    applyBodyForces16bitFP(center, body, f)
-    //applyBodyForces16bitFP(center, body2, f)
+    initializeForcesCalc(body0)
+    initializeForcesCalc(body1)
+    initializeForcesCalc(body2)
+    initializeForcesCalc(body3)
 
-    applyBodyForces16bitFP(body, center, f)
-    //applyBodyForces16bitFP(body, body2, f)
+    // Apply all forces
+    applyBodyForces16bitFP(body0, body1, f)
+    applyBodyForces16bitFP(body0, body2, f)
+    applyBodyForces16bitFP(body0, body3, f)
 
-    //applyBodyForces16bitFP(body2, center, f)
-    //applyBodyForces16bitFP(body2, body, f)
+    applyBodyForces16bitFP(body1, body0, f)
+    applyBodyForces16bitFP(body1, body2, f)
+    applyBodyForces16bitFP(body1, body3, f)
+
+    applyBodyForces16bitFP(body2, body0, f)
+    applyBodyForces16bitFP(body2, body1, f)
+    applyBodyForces16bitFP(body2, body3, f)
+
+    applyBodyForces16bitFP(body3, body0, f)
+    applyBodyForces16bitFP(body3, body1, f)
+    applyBodyForces16bitFP(body3, body2, f)
 
     // Calculate velocities and positions
-    updateBodyPos16bitFP(center, f)
-    updateBodyPos16bitFP(body, f)
-    //updateBodyPos16bitFP(body2, f)
+    updateBodyPos16bitFP(body0, f)
+    updateBodyPos16bitFP(body1, f)
+    updateBodyPos16bitFP(body2, f)
+    updateBodyPos16bitFP(body3, f)
 
-    updateSpritePositionForBody(0, body)
-    updateSpritePositionForBody(1, center)
+    updateSpritePositionForBody(0, body0)
+    updateSpritePositionForBody(1, body1)
     updateSpritePositionForBody(2, body2)
+    updateSpritePositionForBody(3, body3)
 
     jmp loop
 
 	rts
 
-.const INITIAL_X = 25
-.const INITIAL_Y = 0
-
-.const INITIAL_X_2 = 0
-.const INITIAL_Y_2 = 15
 *=$2000 "Data"
-    body:
-        .word INITIAL_X * fValue, INITIAL_Y * fValue  // position
-        .word INITIAL_X, INITIAL_Y  // int position
-        .word 0, 0  // velocity
-        .word 0, 0  // acceleration
-        .word 1 * fValue   // mass (not used for now)
-        .word ceil((1/8) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
-        .byte 0, 0  // screen position
-
-    body2:
-        .word INITIAL_X_2 * fValue, INITIAL_Y_2 * fValue  // position
-        .word INITIAL_X_2, INITIAL_Y_2  // int position
-        .word 0, 0  // velocity
-        .word 0, 0  // acceleration
-        .word 1 * fValue   // mass (not used for now)
-        .word ceil((1/8) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
-        .byte 0, 0  // screen position
-    center:
+    body0:
         .word 0 * fValue, 0 * fValue  // position
         .word 0, 0  // int position
         .word 0, 0  // velocity
         .word 0, 0  // acceleration
+        .word 0, 0  // force
         .word 8 * fValue   // mass (not used for now)
-        .word ceil((1/8) * fValue)   // inversed mass
+        .word ceil((1/32) * fValue)   // inversed mass
+        .byte 0, 0  // screen position
+    body1:
+        .word 0 * fValue, 25 * fValue  // position
+        .word 0, 25  // int position
+        .word 0, 0  // velocity
+        .word 0, 0  // acceleration
+        .word 0, 0  // force
+        .word 8 * fValue   // mass (not used for now)
+        .word ceil((1/2) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
+        .byte 0, 0  // screen position
+    body2:
+        .word -32 * fValue, -36 * fValue  // position
+        .word -2, -40  // int position
+        .word 0, 0  // velocity
+        .word 0, 0  // acceleration
+        .word 0, 0  // force
+        .word 8 * fValue   // mass (not used for now)
+        .word ceil((1/2) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
+        .byte 0, 0  // screen position
+    body3:
+        .word -25 * fValue, 45 * fValue  // position
+        .word -35, 12  // int position
+        .word 0, 0  // velocity
+        .word 0, 0  // acceleration
+        .word 0, 0  // force
+        .word 8 * fValue   // mass (not used for now)
+        .word ceil((1/12) * fValue)//floor((1 / 0.01) * fValue)   // inversed mass
         .byte 0, 0  // screen position
 
     oneVectorFP: .word 1 * fValue, 1 * fValue
-.print(printVectAddr("body_x", body + BODY_INT_POSITION_OFFSET))
-.print(printVectAddr("body_vx", body + BODY_VELOCITY_OFFSET))
-.print(printVectAddr("body_ax", body + BODY_ACCELERATION_OFFSET))
+.print(printVectAddr("body_x", body0 + BODY_INT_POSITION_OFFSET))
+.print(printVectAddr("body_vx", body0 + BODY_VELOCITY_OFFSET))
+.print(printVectAddr("body_ax", body0 + BODY_ACCELERATION_OFFSET))
 
 // 250
 *=$3E80 "Sprite #0"
