@@ -1,5 +1,5 @@
-#import "lib/vector_arith.asm"
-#import "lib/graphics.asm"
+#import "vector_arith.asm"
+#import "graphics.asm"
 
 .const VAR_SIZE                 = 2
 .const VECTOR_BYTE_SIZE         = 2 * VAR_SIZE

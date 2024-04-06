@@ -1,5 +1,6 @@
 #import "lib/graphics.asm"
 #import "lib/physics.asm"
+#import "lib/screen.asm"
 
 *=$1000 "Start"
     jmp $4000
@@ -8,6 +9,11 @@
 .const fValue = pow(2, f)
 
 *=$4000 "Main"
+    clearScreen()
+    setBackgroundColor(0, 11)
+    setLine(1, introStr1, 15)
+    setLine(24, introStr2, 12)
+
     // Enable sprite #0, #1 and #2 by setting 2-th, 1-th and 0-th bit
     enableSprites(%00001111)
 
@@ -105,6 +111,8 @@ loop:
         .byte 0, 0  // screen position
 
     oneVectorFP: .word 1 * fValue, 1 * fValue
+    introStr1: .text "          gravity simulation v1.0       "
+    introStr2: .text "       (c) michael lipinski, 2024       "
 .print(printVectAddr("body_x", body0 + BODY_INT_POSITION_OFFSET))
 .print(printVectAddr("body_vx", body0 + BODY_VELOCITY_OFFSET))
 .print(printVectAddr("body_ax", body0 + BODY_ACCELERATION_OFFSET))
